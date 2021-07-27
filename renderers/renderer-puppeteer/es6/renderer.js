@@ -67,7 +67,7 @@ class PuppeteerRenderer {
         }
       }
       if (this._rendererOptions.injectRequest) {
-        page.on('request', this._rendererOptions.requestInject)
+        this._rendererOptions.injectRequest(page, baseURL)
       }
 
       req.continue()

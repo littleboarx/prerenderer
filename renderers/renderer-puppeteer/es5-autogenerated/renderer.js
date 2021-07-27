@@ -132,7 +132,7 @@ var PuppeteerRenderer = function () {
                     }
                   }
                   if (_this._rendererOptions.injectRequest) {
-                    page.on('request', _this._rendererOptions.requestInject);
+                    _this._rendererOptions.injectRequest(page, baseURL);
                   }
 
                   req.continue();
