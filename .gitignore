@@ -110,6 +110,9 @@ typings/
 !.vscode/launch.json
 !.vscode/extensions.json
 
+#idea
+*/**/.idea
+.idea
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db

@@ -123,7 +123,6 @@ var PuppeteerRenderer = function () {
                 return page.setRequestInterception(true);
 
               case 2:
-
                 page.on('request', function (req) {
                   // Skip third party requests if needed.
                   if (_this._rendererOptions.skipThirdPartyRequests) {
@@ -131,6 +130,9 @@ var PuppeteerRenderer = function () {
                       req.abort();
                       return;
                     }
+                  }
+                  if (_this._rendererOptions.injectRequest) {
+                    page.on('request', _this._rendererOptions.requestInject);
                   }
 
                   req.continue();
@@ -292,7 +294,16 @@ var PuppeteerRenderer = function () {
   }, {
     key: 'destroy',
     value: function destroy() {
-      this._puppeteer.close();
+      if (this._puppeteer) {
+        try {
+          this._puppeteer.close();
+        } catch (e) {
+          console.error(e);
+          console.error('[Prerenderer - PuppeteerRenderer] Unable to close Puppeteer');
+
+          throw e;
+        }
+      }
     }
   }]);
 

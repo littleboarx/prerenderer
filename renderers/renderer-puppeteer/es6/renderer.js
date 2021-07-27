@@ -58,7 +58,6 @@ class PuppeteerRenderer {
 
   async handleRequestInterception (page, baseURL) {
     await page.setRequestInterception(true)
-
     page.on('request', req => {
       // Skip third party requests if needed.
       if (this._rendererOptions.skipThirdPartyRequests) {
@@ -66,6 +65,9 @@ class PuppeteerRenderer {
           req.abort()
           return
         }
+      }
+      if (this._rendererOptions.injectRequest) {
+        page.on('request', this._rendererOptions.requestInject)
       }
 
       req.continue()
@@ -108,9 +110,9 @@ class PuppeteerRenderer {
                 })
               }, this._rendererOptions)
             }
-            
-            const navigationOptions = (options.navigationOptions) ? { waituntil: 'networkidle0', ...options.navigationOptions } : { waituntil: 'networkidle0' };
-            await page.goto(`${baseURL}${route}`, navigationOptions);
+
+            const navigationOptions = (options.navigationOptions) ? { waituntil: 'networkidle0', ...options.navigationOptions } : { waituntil: 'networkidle0' }
+            await page.goto(`${baseURL}${route}`, navigationOptions)
 
             // Wait for some specific element exists
             const { renderAfterElementExists } = this._rendererOptions
@@ -137,13 +139,13 @@ class PuppeteerRenderer {
   }
 
   destroy () {
-    if(this._puppeteer) {
+    if (this._puppeteer) {
       try {
         this._puppeteer.close()
       } catch (e) {
         console.error(e)
         console.error('[Prerenderer - PuppeteerRenderer] Unable to close Puppeteer')
-		  
+
         throw e
       }
     }
